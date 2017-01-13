@@ -51,8 +51,9 @@ THE SOFTWARE.
 // I2C interface implementation setting
 // -----------------------------------------------------------------------------
 #ifndef I2CDEV_IMPLEMENTATION
-#define I2CDEV_IMPLEMENTATION       I2CDEV_ARDUINO_WIRE
+//#define I2CDEV_IMPLEMENTATION       I2CDEV_ARDUINO_WIRE
 //#define I2CDEV_IMPLEMENTATION       I2CDEV_BUILTIN_FASTWIRE
+#define I2CDEV_IMPLEMENTATION       I2C_T3
 #endif // I2CDEV_IMPLEMENTATION
 
 // comment this out if you are using a non-optimal IDE/implementation setting
@@ -67,6 +68,7 @@ THE SOFTWARE.
                                       // ^^^ NBWire implementation is still buggy w/some interrupts!
 #define I2CDEV_BUILTIN_FASTWIRE     3 // FastWire object from Francesco Ferrara's project
 #define I2CDEV_I2CMASTER_LIBRARY    4 // I2C object from DSSCircuits I2C-Master Library at https://github.com/DSSCircuits/I2C-Master-Library
+#define I2C_T3						5 // I2C_T3 for Teensy 3 to support multiple I2C buses
 
 // -----------------------------------------------------------------------------
 // Arduino-style "Serial.print" debug constant (uncomment to enable)
@@ -85,6 +87,9 @@ THE SOFTWARE.
     #if I2CDEV_IMPLEMENTATION == I2CDEV_I2CMASTER_LIBRARY
         #include <I2C.h>
     #endif
+    #if I2CDEV_IMPLEMENTATION == I2C_T3
+        #include <i2c_t3.h>
+    #endif
 #endif
 
 #ifdef SPARK
@@ -96,27 +101,36 @@ THE SOFTWARE.
 // 1000ms default read timeout (modify with "I2Cdev::readTimeout = [ms];")
 #define I2CDEV_DEFAULT_READ_TIMEOUT     1000
 
+#ifndef WIRECLASS
+	#if I2CDEV_IMPLEMENTATION == I2C_T3
+		#define BUFFER_LENGTH 32
+		#define WIRECLASS i2c_t3
+	#else
+		#define WIRECLASS TwoWire
+	#endif
+#endif
+
 class I2Cdev {
     public:
         I2Cdev();
 
-        static int8_t readBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readBitW(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readBitsW(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readByte(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readWord(uint8_t devAddr, uint8_t regAddr, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBit(WIRECLASS& wireBus, uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBitW(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBits(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBitsW(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readByte(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readWord(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBytes(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readWords(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
 
-        static bool writeBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t data);
-        static bool writeBitW(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t data);
-        static bool writeBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t data);
-        static bool writeBitsW(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t data);
-        static bool writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data);
-        static bool writeWord(uint8_t devAddr, uint8_t regAddr, uint16_t data);
-        static bool writeBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data);
-        static bool writeWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data);
+        static bool writeBit(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t data);
+        static bool writeBitW(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t data);
+        static bool writeBits(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t data);
+        static bool writeBitsW(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t data);
+        static bool writeByte(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t data);
+        static bool writeWord(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint16_t data);
+        static bool writeBytes(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data);
+        static bool writeWords(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data);
 
         static uint16_t readTimeout;
 };
