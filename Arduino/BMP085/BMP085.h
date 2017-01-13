@@ -77,6 +77,7 @@ class BMP085 {
         BMP085();
         BMP085(uint8_t address);
 
+		void initialize( WIRECLASS& newWireBus );
         void initialize();
         bool testConnection();
 
@@ -117,6 +118,7 @@ class BMP085 {
    private:
         uint8_t devAddr;
         uint8_t buffer[3];
+		WIRECLASS *wireBus = &Wire;
 
         bool calibrationLoaded;
         int16_t ac1, ac2, ac3, b1, b2, mb, mc, md;

@@ -106,6 +106,7 @@ class HMC5883L {
         HMC5883L(uint8_t address);
         
         void initialize();
+		void initialize( WIRECLASS& newWireBus );
         bool testConnection();
 
         // CONFIG_A register
@@ -143,6 +144,7 @@ class HMC5883L {
         uint8_t devAddr;
         uint8_t buffer[6];
         uint8_t mode;
+		WIRECLASS *wireBus = &Wire;
 };
 
 #endif /* _HMC5883L_H_ */

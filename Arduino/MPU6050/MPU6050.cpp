@@ -68,7 +68,7 @@ void MPU6050::initialize() {
 }
 
 void MPU6050::initialize( WIRECLASS& newWireBus ) {
-  wireBus = newWireBus;
+  wireBus = &newWireBus;
   initialize();
 }
 

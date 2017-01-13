@@ -1029,7 +1029,7 @@ class MPU6050 {
     private:
         uint8_t devAddr;
         uint8_t buffer[14];
-		WIRECLASS& wireBus = Wire;
+		WIRECLASS *wireBus = &Wire;
 
 };
 

@@ -114,23 +114,23 @@ class I2Cdev {
     public:
         I2Cdev();
 
-        static int8_t readBit(WIRECLASS& wireBus, uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readBitW(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readBits(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readBitsW(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readByte(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readWord(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readBytes(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
-        static int8_t readWords(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBit(WIRECLASS *wireBus, uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBitW(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBits(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBitsW(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readByte(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readWord(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readBytes(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data, uint16_t timeout=I2Cdev::readTimeout);
+        static int8_t readWords(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data, uint16_t timeout=I2Cdev::readTimeout);
 
-        static bool writeBit(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t data);
-        static bool writeBitW(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t data);
-        static bool writeBits(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t data);
-        static bool writeBitsW(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t data);
-        static bool writeByte(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t data);
-        static bool writeWord(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint16_t data);
-        static bool writeBytes(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data);
-        static bool writeWords(WIRECLASS& wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data);
+        static bool writeBit(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t data);
+        static bool writeBitW(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t data);
+        static bool writeBits(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t data);
+        static bool writeBitsW(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t data);
+        static bool writeByte(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t data);
+        static bool writeWord(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint16_t data);
+        static bool writeBytes(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data);
+        static bool writeWords(WIRECLASS *wireBus,uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data);
 
         static uint16_t readTimeout;
 };

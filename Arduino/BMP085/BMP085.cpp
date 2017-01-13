@@ -50,6 +50,11 @@ BMP085::BMP085(uint8_t address) {
     devAddr = address;
 }
 
+void BMP085::initialize( WIRECLASS& newWireBus ) {
+  wireBus = &newWireBus;
+  initialize();
+}
+
 /**
  * Prepare device for normal usage.
  */
@@ -63,14 +68,14 @@ void BMP085::initialize() {
  */
 bool BMP085::testConnection() {
     // test for a response, though this is very basic
-    return I2Cdev::readByte(devAddr, BMP085_RA_AC1_H, buffer) == 1;
+    return I2Cdev::readByte(wireBus, devAddr, BMP085_RA_AC1_H, buffer) == 1;
 }
 
 /* calibration register methods */
 
 void BMP085::loadCalibration() {
     uint8_t buf2[22];
-    I2Cdev::readBytes(devAddr, BMP085_RA_AC1_H, 22, buf2);
+    I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_AC1_H, 22, buf2);
     ac1 = ((int16_t)buf2[0] << 8) + buf2[1];
     ac2 = ((int16_t)buf2[2] << 8) + buf2[3];
     ac3 = ((int16_t)buf2[4] << 8) + buf2[5];
@@ -88,67 +93,67 @@ void BMP085::loadCalibration() {
 #ifdef BMP085_INCLUDE_INDIVIDUAL_CALIBRATION_ACCESS
     int16_t BMP085::getAC1() {
         if (calibrationLoaded) return ac1;
-        I2Cdev::readBytes(devAddr, BMP085_RA_AC1_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_AC1_H, 2, buffer);
         return ((int16_t)buffer[1] << 8) + buffer[0];
     }
 
     int16_t BMP085::getAC2() {
         if (calibrationLoaded) return ac2;
-        I2Cdev::readBytes(devAddr, BMP085_RA_AC2_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_AC2_H, 2, buffer);
         return ((int16_t)buffer[1] << 8) + buffer[0];
     }
 
     int16_t BMP085::getAC3() {
         if (calibrationLoaded) return ac3;
-        I2Cdev::readBytes(devAddr, BMP085_RA_AC3_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_AC3_H, 2, buffer);
         return ((int16_t)buffer[1] << 8) + buffer[0];
     }
 
     uint16_t BMP085::getAC4() {
         if (calibrationLoaded) return ac4;
-        I2Cdev::readBytes(devAddr, BMP085_RA_AC4_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_AC4_H, 2, buffer);
         return ((uint16_t)buffer[1] << 8) + buffer[0];
     }
 
     uint16_t BMP085::getAC5() {
         if (calibrationLoaded) return ac5;
-        I2Cdev::readBytes(devAddr, BMP085_RA_AC5_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_AC5_H, 2, buffer);
         return ((uint16_t)buffer[1] << 8) + buffer[0];
     }
 
     uint16_t BMP085::getAC6() {
         if (calibrationLoaded) return ac6;
-        I2Cdev::readBytes(devAddr, BMP085_RA_AC6_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_AC6_H, 2, buffer);
         return ((uint16_t)buffer[1] << 8) + buffer[0];
     }
 
     int16_t BMP085::getB1() {
         if (calibrationLoaded) return b1;
-        I2Cdev::readBytes(devAddr, BMP085_RA_B1_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_B1_H, 2, buffer);
         return ((int16_t)buffer[1] << 8) + buffer[0];
     }
 
     int16_t BMP085::getB2() {
         if (calibrationLoaded) return b2;
-        I2Cdev::readBytes(devAddr, BMP085_RA_B2_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_B2_H, 2, buffer);
         return ((int16_t)buffer[1] << 8) + buffer[0];
     }
 
     int16_t BMP085::getMB() {
         if (calibrationLoaded) return mb;
-        I2Cdev::readBytes(devAddr, BMP085_RA_MB_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_MB_H, 2, buffer);
         return ((int16_t)buffer[1] << 8) + buffer[0];
     }
 
     int16_t BMP085::getMC() {
         if (calibrationLoaded) return mc;
-        I2Cdev::readBytes(devAddr, BMP085_RA_MC_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_MC_H, 2, buffer);
         return ((int16_t)buffer[1] << 8) + buffer[0];
     }
 
     int16_t BMP085::getMD() {
         if (calibrationLoaded) return md;
-        I2Cdev::readBytes(devAddr, BMP085_RA_MD_H, 2, buffer);
+        I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_MD_H, 2, buffer);
         return ((int16_t)buffer[1] << 8) + buffer[0];
     }
 #endif
@@ -156,22 +161,22 @@ void BMP085::loadCalibration() {
 /* control register methods */
 
 uint8_t BMP085::getControl() {
-    I2Cdev::readByte(devAddr, BMP085_RA_CONTROL, buffer);
+    I2Cdev::readByte(wireBus, devAddr, BMP085_RA_CONTROL, buffer);
     return buffer[0];
 }
 void BMP085::setControl(uint8_t value) {
-    I2Cdev::writeByte(devAddr, BMP085_RA_CONTROL, value);
+    I2Cdev::writeByte(wireBus, devAddr, BMP085_RA_CONTROL, value);
     measureMode = value;
 }
 
 /* measurement register methods */
 
 uint16_t BMP085::getMeasurement2() {
-    I2Cdev::readBytes(devAddr, BMP085_RA_MSB, 2, buffer);
+    I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_MSB, 2, buffer);
     return ((uint16_t)buffer[0] << 8) + buffer[1];
 }
 uint32_t BMP085::getMeasurement3() {
-    I2Cdev::readBytes(devAddr, BMP085_RA_MSB, 3, buffer);
+    I2Cdev::readBytes(wireBus, devAddr, BMP085_RA_MSB, 3, buffer);
     return ((uint32_t)buffer[0] << 16) + ((uint16_t)buffer[1] << 8) + buffer[2];
 }
 uint8_t BMP085::getMeasureDelayMilliseconds(uint8_t mode) {
